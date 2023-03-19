@@ -252,4 +252,26 @@ describe('changeset', function () {
     expect({}.polluted).to.not.equal('Yes! Its Polluted');
     done();
   })
+
+  it('should be able to deal with dates', function(done) {
+    var a = new Date();
+    var b = new Date() + 1;
+
+    var changes = diff(a,b);
+    expect(changes).to.deep.equal([
+      { type: 'put', key: [], value: b }
+    ]);
+
+    changes = diff({d:a}, {d:b});
+    expect(changes).to.deep.equal([
+      { type: 'put', key: ['d'], value: b }
+    ]);
+
+    changes = diff({d:[a]}, {d:[b]});
+    expect(changes).to.deep.equal([
+      { type: 'put', key: ['d', '0'], value: b }
+    ]);
+
+    done();
+  })
 });

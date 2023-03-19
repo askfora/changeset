@@ -23,6 +23,7 @@ function compare(path, old, new_) {
   var changes = [];
   if (old !== null && new_ !== null &&
       typeof old === 'object' &&
+      typeof new_ === 'object' &&
       !_.contains(comparing, old)) {
 
     comparing.push(old);
@@ -45,6 +46,11 @@ function compare(path, old, new_) {
       changes.push(delCheck(
         { type: 'put', key: path.concat(k), value: new_[k] }));
     });
+
+    // default to comparing objects
+    if(!oldKeys.length && !newKeys.length && old !== new_) {
+      changes.push(delCheck({ type: 'put', key: path, value: new_ }));
+    }
 
   } else if (old !== new_) {
     changes.push(delCheck({ type: 'put', key: path, value: new_ }));
