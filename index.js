@@ -48,8 +48,15 @@ function compare(path, old, new_) {
     });
 
     // default to comparing objects
-    if(!oldKeys.length && !newKeys.length && old !== new_) {
-      changes.push(delCheck({ type: 'put', key: path, value: new_ }));
+    if(!oldKeys.length && !newKeys.length) {
+      // check for dates
+      if ('getTime' in old && 'getTime' in new_) {
+          if (old.getTime() !== new_.getTime()) {
+            changes.push(delCheck({ type: 'put', key: path, value: new_ }));
+          }
+      } else if(old !== new_) {
+        changes.push(delCheck({ type: 'put', key: path, value: new_ }));
+      }
     }
 
   } else if (old !== new_) {
